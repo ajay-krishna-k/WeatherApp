@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEATHERIA</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- remixicon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css"
+        integrity="sha512-HXXR0l2yMwHDrDyxJbrMD9eLvPe3z3qL3PPeozNTsiHJEENxx8DH2CxmV05iwG0dwoz5n4gQZQyYLUNt1Wdgfg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="./style.css">
+    <link rel="shortcut icon" type="x-icon" href="./images/sun icon.png">
+</head>
+
+<body id="image">
+    <div class="container pt-5 w-100 h-100">
+        <!-- weather -->
+        <h1 class="w-head text-center" style="color: wheat;">WEATHERIA</h1>
+
+        <!-- search bar -->
+        <div class="container p-4">
+            <!-- search bar -->
+            <div class="row justify-content-center">
+                <div class="col-12 col-sm-6 col-md-4">
+                    <div class="d-flex">
+                        <input type="search" id="inputname" class="search form-control rounded"
+                            placeholder="Enter City Name" aria-label="Search" aria-describedby="search-addon"
+                            style="height: 50px; width: 80%;" />
+                        <button onclick="search()" class="btn ms-1" type="button">
+                            <i class="fa-solid fa-magnifying-glass fa-xl" style="color: white;"></i>
+                        </button>
+                        <a href="javascript: location.reload();"
+                            class="btn justify-content-center align-items-center d-flex ms-1">
+                            <i class="fa-solid fa-arrows-rotate fa-xl" style="color: white;"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="results" class="row mt-5 p-3">
+            <!-- Second Section - Left Side -->
+            <div class="col-md-6 p-4">
+                <div class="card-left " id="result">
+                    <div class="cabo p-4">
+                        <h1 class="head1 ms-5">21.6<sup>o</sup>C</h1>
+                        <h5 class="head1 ms-5 mt-5">Feels like: 21.6<sup>o</sup>C</h5>
+                        <h5 class="head1 ms-5 mt-3">Araouane</h5>
+                        <h5 class="head1 ms-5 mt-3">Clouds</h5>
+                        <h5 class="head1 ms-5 mt-3">Sun Jan 14 2024 02:08:29</h5>
+                    </div>
+                </div>
+            </div>
+
+            <!-- First Section - Right Side -->
+            <div class="col-md-6 p-4">
+                <div class="card-right p-4 " id="result1">
+                    <div class="cabo">
+                        <h3 class="head1 mb-5 text-center">Weather Details</h3>
+                        <h4 class="card-sub ms-5 mb-3">Country : Mali</h4>
+                        <h4 class="card-sub ms-5 mb-3">Humidity : 9%</h4>
+                        <h4 class="card-sub ms-5 mb-3">Wind    : 4.83m/s</h4>
+                        <h4 class="card-sub ms-5 mb-3">Pressure : 1019Pa</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to convert country code to country name
+        const convertCountryCodeToName = async (countryCode) => {
+            try {
+                let regionNames = new Intl.DisplayNames(["en"], { type: "region" });
+                let countryName = await regionNames.of(countryCode);
+                return countryName;
+            } catch (error) {
+                console.error("Error converting country code to name:", error);
+                throw error;
+            }
+        };
+
+        // Function definition
+        const search = async () => {
+            let cityName = inputname.value;
+            console.log(cityName);
+            if (cityName) {
+                try {
+                    response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=f5e87cd1f646f9fb2f8cda79c06bb41f`);
+                    const data = await response.json();
+
+                    console.log(data);
+
+                    let cname = data.name;
+                    console.log(cname);
+
+                    let cntryName = data.sys.country;
+                    console.log(cntryName);
+
+                    // Convert country code to country name
+                    try {
+                        cntryName = await convertCountryCodeToName(cntryName);
+                    } catch (error) {
+                        console.error(error);
+                        // Handle the error as needed
+                    }
+
+                    let humidity = data.main.humidity;
+                    console.log(humidity);
+
+                    let pressure = data.main.pressure;
+                    console.log(pressure);
+
+                    let wind = data.wind.speed;
+                    console.log(wind);
+
+                    let descriptn = data.weather[0].main;
+                    console.log(descriptn);
+
+                    let temp = data.main.temp;
+                    temp = eval((temp - 273.15));
+                    temperature = temp.toFixed(1);
+                    console.log(temperature);
+
+                    var date = Date();
+                    console.log(date);
+
+                    climate = data.weather[0].main;   
+                    console.log(climate);
+
+
+                    if (climate == 'Mist') {
+                    image.style.backgroundImage = "url('./images/mist.jpg')"
+                }
+                else if (climate == 'Clouds') {
+                    image.style.backgroundImage = "url('./images/clouds.jpg')"
+                }
+                else if (climate == 'Thunderstorm') {
+                    image.style.backgroundImage = "url('./images/thunderstorm.jpg')"
+                }
+                else if (climate == 'Drizzle') {
+                    image.style.backgroundImage = "url('./images/ddrizzle.jpg')"
+                }
+                else if (climate == 'Tornado') {
+                    image.style.backgroundImage = "url('./images/tornado.jpg')"
+                }
+                else if (climate == 'Squall') {
+                    image.style.backgroundImage = "url('./images/squall.jpg')"
+                }
+                else if (climate == 'Ash') {
+                    image.style.backgroundImage = "url('./images/ash.jpg')"
+                }
+                else if (climate == 'Clear') {
+                    image.style.backgroundImage = "url('./images/clear.webp')"
+                }
+                else if (climate == 'Rain') {
+                    image.style.backgroundImage = "url('./images/rain.jpg')"
+                }
+                else if (climate == 'Haze') {
+                    image.style.backgroundImage = "url('./images/haze.jpg')"
+                }
+                else if (climate == 'Fog') {
+                    image.style.backgroundImage = "url('./images/fog.jpg')"
+                }
+                else {
+                    image.style.backgroundImage = "url('https://4kwallpapers.com/images/walls/thumbs_3t/3609.jpg')"
+                }
+
+                    
+                    results.innerHTML = `
+                    <div class="row mt-5 p-3">
+                        <!-- Second Section - Left Side -->
+                        <div class="col-md-6 p-4">
+                            <div class="card-left " id="result">
+                                <div class="cabo p-4">
+                                    <h1 class="head1 ms-5"> ${temperature}<sup>o</sup>C</h1>
+                                    <h5 class="head1 ms-5 mt-5">feels like ${temperature}<sup>o</sup>C</h5>
+                                    <h5 class="head1 ms-5 mt-3">${cname}</h5>
+                                    <h5 class="head1 ms-5 mt-3">${descriptn}</h5>
+                                    <h5 class="head1 ms-5 mt-3">${date}</h5>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- First Section - Right Side -->
+                        <div class="col-md-6 p-4">
+                            <div class="card-right p-4 " id="result1">
+                                <div class="cabo">
+                                    <h3 class="head1 mb-5 text-center">Weather Details</h3>
+                                    <h4 class="card-sub mb-3">Country : ${cntryName}</h4>
+                                    <h4 class="card-sub mb-3">Humidity : ${humidity}% </h4>
+                                    <h4 class="card-sub mb-3">Wind : ${wind}m/s </h4>
+                                    <h4 class="card-sub mb-3">Pressure : ${pressure}Pa</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+                } catch (error) {
+                    console.error("Error fetching weather data:", error);
+                }
+            } else {
+                alert('Please enter the city name');
+            }
+        };
+    </script>
+</body>
+
+</html>
